@@ -1,3 +1,24 @@
+--[[
+	******************************************************************************
+	* @file		: .../src/libs/XMLParser.lua
+	* @author	: Scrpt2r
+	* @date		: January 06 2026
+	* @lastEdit	: January 06 2026 @ 02:55
+	* @brief	: XML parser in luau.
+	* @version	: 0.1.3
+	******************************************************************************
+	* @attention
+	*
+	* Copyright © 2025 Axon Corporation.
+	* All rights reserved.
+	*
+	* This software is licensed under terms that can be found in the LICENSE file
+	* in the root directory of this software component.
+	* If no LICENSE file comes with this software, it is provided AS-IS.
+	*
+	******************************************************************************
+--]]
+
 --// Variables
 local _slashchar = string.byte("/", 1)
 local _E = string.byte("E", 1)
