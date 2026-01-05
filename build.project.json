@@ -1,0 +1,18 @@
+{
+    "name": "customFontService",
+    "tree": {
+        "$path": "src/__index.luau",
+        "$properties": {
+            "Attributes": {
+                "version": {"String": "0.0.1"}
+            }
+        },
+        "libs": {
+            "$className": "Folder",
+            "$path": "src/libs"
+        },
+        "log": {
+            "$path": "src/__log__"
+        }
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "customFontService",
+  "tree": {
+	"$className": "DataModel",
+	"ReplicatedStorage": {
+	  "replicated": {
+		"$className": "Folder",
+		"packages": {
+		  "$className": "Folder",
+		  "customFontService": {
+			"$properties": {
+			  "Attributes": {
+				"version": {
+				  "String": "0.0.1"
+				}
+			  }
+			},
+			"$path": "src/__index.luau",
+			"libs": {
+			  "$path": "src/libs"
+			},
+			"log": {
+			  "$path": "src/__log__"
+			}
+		  }
+		}
+	  }
+	}
+  }
+}
