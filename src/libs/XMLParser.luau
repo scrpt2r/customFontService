@@ -9,7 +9,7 @@
 	******************************************************************************
 	* @attention
 	*
-	* Copyright © 2025 Axon Corporation.
+	* Copyright © 2026 Axon Corporation.
 	* All rights reserved.
 	*
 	* This software is licensed under terms that can be found in the LICENSE file
