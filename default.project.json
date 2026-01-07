@@ -17,10 +17,13 @@
 			},
 			"$path": "src/__index.luau",
 			"libs": {
-			  "$path": "src/libs"
+				"$path": "src/libs"
 			},
 			"log": {
-			  "$path": "src/__log__"
+				"$path": "src/__log__"
+			},
+			"__main__": {
+				"$path": "src/__main__.luau"
 			}
 		  }
 		}

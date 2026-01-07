@@ -5,7 +5,7 @@
 	* @date		: January 06 2026
 	* @lastEdit	: January 07 2026 @ 21:57
 	* @brief	: XML parser in luau.
-	* @version	: 0.2.0
+	* @version	: 0.2.5
 	******************************************************************************
 	* @attention
 	*
@@ -17,35 +17,6 @@
 	* If no LICENSE file comes with this software, it is provided AS-IS.
 	*
 	******************************************************************************
---]]
-
---[[
-{
-                    [1] =  ▼  {
-                       ["content"] = "I want the ",
-                       ["type"] = "text"
-                    },
-                    [2] =  ▼  {
-                       ["attributes"] =  ▼  {
-                          ["color"] = "#FF7800"
-                       },
-                       ["isClosing"] = false,
-                       ["tagName"] = "font",
-                       ["type"] = "tag"
-                    },
-                    [3] =  ▼  {
-                       ["content"] = "orange",
-                       ["type"] = "text"
-                    },
-                    [4] =  ▼  {
-                       ["attributes"] = {},
-                       ["isClosing"] = true,
-                       ["tagName"] = "font",
-                       ["type"] = "tag"
-                    },
-                    [5] =  ▶ {...}
-                 } 
-
 --]]
 
 --// Functions
@@ -83,8 +54,10 @@ function toTree(orgTable: { [number]: any }): { [number]: any }
 	return root.children
 end
 
+--// Lib Declaration
 local XMLParser = {}
 
+--// Lib Funtcions
 function XMLParser.parse(text)
 	local segments = {}
 	local tempText = text .. "<__EOF__>"
@@ -92,11 +65,6 @@ function XMLParser.parse(text)
 	local tagStack = {}
 	local currentIDCounter = 0
 
-	-- (.-)      -> Etiket öncesindeki her şey (Yazı)
-	-- <         -> Etiketin açılışı
-	-- (/?)(...) -> Slash ve Etiket ismi
-	-- ([^>]*)   -> Attribute'lar
-	-- >         -> Etiketin kapanışı
 	for preText, slash, tagName, attributes in string.gmatch(tempText, "(.-)<(/?)([%w_]+)([^>]*)>") do
 		if #preText > 0 then
 			table.insert(segments, {
