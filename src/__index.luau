@@ -5,7 +5,7 @@
 	* @date			:	January 06 2026
 	* @lastEdit		:	January 07 2026
 	* @brief		:	A service for using non existing fonts in studio.
-	* @version		:	0.2.5
+	* @version		:	0.3.0
 	******************************************************************************
 	* @attention
 	*
