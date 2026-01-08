@@ -19,97 +19,125 @@
 	******************************************************************************
 --]]
 
---// Functions
-function toTree(orgTable: { [number]: any }): { [number]: any }
-	local root = {
-		tagName = "ROOT",
-		children = {},
-	}
+--// Libs
+local types = require(script.Parent.global.types)
 
-	local stack = { root }
+--// Custom Types
+type _token = types.token
+export type token = _token
 
-	for _, segment in ipairs(orgTable) do
-		local currentParent = stack[#stack]
+type _attributeMap = types.attributeMap
+export type attributeMap = _attributeMap
 
-		if segment.type == "text" then
-			table.insert(currentParent.children, segment.content)
-		elseif segment.type == "tag" then
-			if not segment.isClosing then
-				local newNode = {
-					tagName = segment.tagName,
-					attributes = segment.attributes,
-					children = {},
-				}
-
-				table.insert(currentParent.children, newNode)
-				table.insert(stack, newNode)
-			end
-		else
-			if #stack > 1 then
-				table.remove(stack)
-			end
-		end
-	end
-
-	return root.children
-end
+type _node = types.node
+export type node = _node
 
 --// Lib Declaration
 local XMLParser = {}
+XMLParser.__index = XMLParser
 
 --// Lib Funtcions
-function XMLParser.parse(text)
-	local segments = {}
-	local tempText = text .. "<__EOF__>"
+function XMLParser.new(options: { trimText: boolean, ignoreWhitespace: boolean })
+	local self = {
+		trimText = options.trimText ~= false,
+		ignoreWhitespace = options.ignoreWhitespace ~= false,
+	}
 
-	local tagStack = {}
-	local currentIDCounter = 0
+	return setmetatable(self, XMLParser)
+end
+
+function XMLParser:_tokenize(text: string): { token }
+	local tokens = {}
+	local tempText = text .. "<__EOF__>"
 
 	for preText, slash, tagName, attributes in string.gmatch(tempText, "(.-)<(/?)([%w_]+)([^>]*)>") do
 		if #preText > 0 then
-			table.insert(segments, {
-				type = "text",
-				content = preText,
-				parentId = tagStack[#tagStack] and tagStack[#tagStack].id,
-			})
+			local content = preText
+
+			if self.trimText then
+				content = content:match("^%s*(.-)%s*$")
+			end
+
+			if not (self.ignoreWhitespace and content == "") then
+				table.insert(tokens, {
+					type = "text",
+					content = content,
+				})
+			end
 		end
 
 		if tagName == "__EOF__" then
 			break
 		end
 
-		local props = {}
+		local props: attributeMap = {}
 		for key, value in string.gmatch(attributes, "([%w_]+)%s*=%s*[\"'](.-)[\"']") do
 			props[key] = value
 		end
 
-		local isClosing = (slash == "/")
-		local segmentID = nil
+		local isClosing = slash == "/"
+		local isSelfClosing = attributes:find("/%s*$") ~= nil
 
-		if not isClosing then
-			currentIDCounter += 1
-			segmentID = currentIDCounter
-
-			table.insert(tagStack, { tagName = tagName, id = segmentID })
-		else
-			local lastOpenTag = tagStack[#tagStack]
-
-			if lastOpenTag and lastOpenTag.tagName == tagName then
-				segmentID = lastOpenTag.id
-				table.remove(tagStack)
-			end
-		end
-
-		table.insert(segments, {
+		table.insert(tokens, {
 			type = "tag",
-			isClosing = isClosing,
 			tagName = tagName,
-			attributes = props,
-			id = segmentID,
+			attributes = attributes,
+			isClosing = isClosing,
+			isSelfClosing = isSelfClosing,
 		})
 	end
 
-	return toTree(segments)
+	return tokens
+end
+
+function XMLParser:_buildTree(tokens: { token }): node
+	local root: node = {
+		tagName = "ROOT",
+		attributes = {},
+		children = {},
+	}
+
+	local stack = { root }
+
+	for _, token in ipairs(tokens) do
+		local currentParent = stack[#stack]
+
+		if token.type == "text" then
+			table.insert(currentParent.children, token.content)
+		elseif token.type == "tag" then
+			assert(token.tagName, "Invalid tag token")
+
+			if token.isClosing then
+				local last = stack[#stack]
+				assert(last and last.tagName == token.tagName, ("Mismatched closing tag: </%s>"):format(token.tagName))
+
+				table.remove(stack)
+			else
+				local node: node = {
+					tagName = token.tagName,
+					attributes = token.attributes or {},
+					children = {},
+				}
+
+				table.insert(currentParent.children, node)
+
+				if not token.isSelfClosing then
+					table.insert(stack, node)
+				end
+			end
+		end
+	end
+
+	return root
+end
+
+function XMLParser:_parse(text: string): node
+	assert(type(text) == "string", "XMLParser.parse expects a string")
+
+	local tokens = self:_tokenize(text)
+	local tree = self:_buildTree(tokens)
+
+	return tree
 end
 
 return XMLParser

@@ -12,6 +12,7 @@ export type main = type__main
 
 --// Variables
 local fonts = script.Parent.fonts
+local myParser = xmlParser.new()
 
 --// Lib Declaration
 local __main__ = {}
@@ -32,42 +33,9 @@ end
 function __main__:renderNormal() end
 
 function __main__:renderAsRich(tree, inheritedProps)
-	local currentProps = table.clone(inheritedProps or {})
-
-	for k, node in ipairs(tree) do
-		if type(node) == "string" then
-			local length = string.len(node)
-			local text = string.split(node, "")
-
-			for i = 1, length do
-				local t = self.fontData[unicode[text[i]]]
-				print(k, t)
-				print(k, text[i])
-				print(k, unicode[text[i]])
-			end
-
-			if currentProps.size then
-				print(tonumber(currentProps.size))
-			end
-			if currentProps.color then
-				print(Color3.fromHex(currentProps.color))
-			end
-
-			print(node)
-		elseif type(node) == "table" then
-			local newProps = table.clone(currentProps)
-
-			if node.tagName == "font" then
-				if node.attributes.size then
-					newProps.size = node.attributes.size
-				end
-				if node.attributes.color then
-					newProps.color = node.attributes.color
-				end
-			end
-
-			print(newProps)
-			__main__.renderAsRich(node.children, newProps)
+	for _, node in ipairs(tree) do
+		if typeof(node) == "string" then
+		elseif typeof(node) == "table" then
 		end
 	end
 end
