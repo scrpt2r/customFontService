@@ -17,7 +17,24 @@ local myParser = xmlParser.new({
 	ignoreWhitespace = true,
 })
 
-local backupTable = nil
+--// Functions
+function mergeAttributes(parentAtts, nodeAttrs)
+	local newAttrs = {}
+
+	if parentAtts then
+		for k, v in pairs(parentAtts) do
+			newAttrs[k] = v
+		end
+	end
+
+	if nodeAttrs then
+		for k, v in pairs(nodeAttrs) do
+			newAttrs[k] = v
+		end
+	end
+
+	return newAttrs
+end
 
 --// Lib Declaration
 local __main__ = {}
@@ -38,48 +55,29 @@ end
 function __main__:renderNormal() end
 
 function __main__:renderAsRich(tree, attributes)
+	local currentAttributes = mergeAttributes(attributes, tree.attributes)
+
 	for k, node in ipairs(tree.children) do
 		if typeof(node) == "string" then
 			local length = string.len(node)
 			local text = string.split(node, "")
 
-			if attributes then
-				local editType = tree.tagName
-
-				if backupTable then
-					for i, v in attributes do
-						table.insert(backupTable, v)
-					end
-					for i, v in backupTable do
-						print(editType)
-						-- edit font with edit type load all edit types
-					end
-				else
-					for i, v in attributes do
-						print(editType)
-					end
-				end
-			end
-
 			for i = 1, length do
-				local encodedLetter = unicode.convert(text[i])
+				local letter = text[i]
+				local encodedLetter = unicode.convert(letter)
 				local decodedLetter = self.fontData[encodedLetter]
 
-				print(text, decodedLetter)
+				if currentAttributes and next(currentAttributes) then
+					-- render "decodedLetter" with types;
+					-- Gonna edit type: editType,
+					-- To edit: currentAttributes
+				else
+					-- render "decodedLetter" normal
+					print(decodedLetter)
+				end
 			end
 		elseif typeof(node) == "table" then
-			if k == 1 then
-				backupTable = {}
-
-				for i, v in node.attributes do
-					table.insert(backupTable, v)
-				end
-			else
-				table.clear(backupTable)
-				backupTable = nil
-			end
-
-			__main__.renderAsRich(node, node.attributes)
+			__main__.renderAsRich(node, currentAttributes)
 		end
 	end
 end
