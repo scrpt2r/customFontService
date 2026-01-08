@@ -81,7 +81,7 @@ function XMLParser:_tokenize(text: string): { token }
 		table.insert(tokens, {
 			type = "tag",
 			tagName = tagName,
-			attributes = attributes,
+			attributes = props,
 			isClosing = isClosing,
 			isSelfClosing = isSelfClosing,
 		})
