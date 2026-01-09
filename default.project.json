@@ -5,7 +5,7 @@
 	"ReplicatedStorage": {
 	  "replicated": {
 		"$className": "Folder",
-		"packages": {
+		"services": {
 		  "$className": "Folder",
 		  "customFontService": {
 			"$properties": {

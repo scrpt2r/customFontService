@@ -1,10 +1,11 @@
 --// Services
---local
+local runService = game:GetService("RunService")
 
 --// Libs
 local types = require(script.Parent.libs.global.types)
 local xmlParser = require(script.Parent.libs.XMLParser)
 local unicode = require(script.Parent.libs.unicodeText)
+local fontEditor = require(script.Parent.libs.fontEditor)
 
 --// Custom Types
 type type__main = types.main
@@ -38,16 +39,22 @@ end
 
 --// Lib Declaration
 local __main__ = {}
-
---// Lib Variables
 __main__.__index = __main__
 
 --// Lib Functions
-function __main__.newFont(fontName: string)
+function __main__.newFont(fontName: string, autoUpdate: boolean)
 	local self = {
 		fontData = require(fonts[fontName].fontData),
 		text = nil,
+		cursor = Vector2.new(0, 0),
+		referenceSize = Vector2.new(1920, 1080),
+		lineHeight = 32,
+		updateConn = nil,
 	}
+
+	if autoUpdate then
+		self.updateConn = runService.RenderStepped:Connect(function(deltaTime) end)
+	end
 
 	return setmetatable(self, __main__)
 end
@@ -64,23 +71,26 @@ function __main__:renderAsRich(tree, attributes)
 
 			for i = 1, length do
 				local letter = text[i]
+
+				if letter == " " then
+					self.cursor = self.cursor + Vector2.new(20, 0)
+					continue
+				end
+
 				local encodedLetter = unicode.convert(letter)
-				local decodedLetter = self.fontData[encodedLetter]
+				local decodedLetter = self.fontData[encodedLetter] or self.fontData[63]
 
 				if currentAttributes and next(currentAttributes) then
-					-- render "decodedLetter" with types;
-					-- Gonna edit type: editType,
-					-- To edit: currentAttributes
 				else
-					-- render "decodedLetter" normal
-					print(decodedLetter)
 				end
 			end
 		elseif typeof(node) == "table" then
-			__main__.renderAsRich(node, currentAttributes)
+			self:renderAsRich(node, currentAttributes)
 		end
 	end
 end
+
+function __main__:setParent(parent: GuiObject?) end
 
 function __main__:newText(text: string, richText: boolean)
 	self.text = text

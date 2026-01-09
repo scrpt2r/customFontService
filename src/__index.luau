@@ -3,9 +3,9 @@
 	* @name			:	Custom Font Service
 	* @authors		:	Scrpt2r
 	* @date			:	January 06 2026
-	* @lastEdit		:	January 07 2026
+	* @lastEdit		:	January 09 2026
 	* @brief		:	A service for using non existing fonts in studio.
-	* @version		:	0.3.0
+	* @version		:	0.6.0
 	******************************************************************************
 	* @attention
 	*

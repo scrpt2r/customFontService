@@ -3,9 +3,9 @@
 	* @file		: .../src/libs/XMLParser.lua
 	* @author	: Scrpt2r
 	* @date		: January 06 2026
-	* @lastEdit	: January 07 2026 @ 21:57
+	* @lastEdit	: January 09 2026 16:04
 	* @brief	: XML parser in luau.
-	* @version	: 0.2.5
+	* @version	: 0.5.0
 	******************************************************************************
 	* @attention
 	*
