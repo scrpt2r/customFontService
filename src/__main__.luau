@@ -6,7 +6,7 @@ local textSpriteHandler = require(script.Parent.libs.textSpriteHandler)
 local types = require(script.Parent.libs.global.types)
 local xmlParser = require(script.Parent.libs.XMLParser)
 local unicode = require(script.Parent.libs.unicodeText)
---local fontEditor = require(script.Parent.libs.fontEditor)
+local _fontEditor = require(script.Parent.libs.fontEditor)
 
 --// Custom Types
 type type__main = types.main
@@ -69,11 +69,10 @@ function __main__.newFont(fontName: string, autoUpdate: boolean)
 	if autoUpdate then
 		self.updateConn = runService.RenderStepped:Connect(function(deltaTime)
 			if self.text ~= self.oldText then
-				print(self.parent)
-				print(deltaTime)
 				local parsedText = myParser:_parse(self.text)
 				self:renderAsRich(parsedText, nil, deltaTime)
 			elseif not self.richText and self.text ~= self.oldText then
+				self:renderNormal()
 			end
 		end)
 	end

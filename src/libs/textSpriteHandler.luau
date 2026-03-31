@@ -1,5 +1,4 @@
 --// Services
-local ProximityPromptService = game:GetService("ProximityPromptService")
 local runService = game:GetService("RunService")
 
 --// Variables
